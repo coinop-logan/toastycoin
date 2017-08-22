@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tokentoast - Create BOP</title>
+    <script type="text/javascript" src='../script/lib/web3.js'></script>
+    <script type="text/javascript" src='../script/lib/jquery.min.js'></script>
+    <script type="text/javascript" src='../script/abiDefinitions/bop_abi.js'></script>
+    <script type="text/javascript" src='../script/abiDefinitions/bop_factory_abi.js'></script>
+    <script type="text/javascript" src="../script/create.js"></script>
+  </head>
+  <body>
+    <center><big><big><big><b>Create BOP</b></big></big></big><br></center>
+    <a href='/'>Home</a><br>
+    <br><br><br>
+    <center>
+    <form id='NewBOPForm'>
+    Payer: <input id = 'payerInput' name='payerInput' type='text' placeholder='Double-click to fetch from Metamask/web3' size='40' ondblclick="populatePayerInputFromMetamask()"><br>
+    Payment Amount: <input id = 'paymentAmountInput' name='paymentAmountInput' type='text' size='7'>ETH<br>
+    Commit Threshold: <input id = 'commitThresholdInput' name='commitThresholdInput' type='text' size='7'>ETH<br>
+    Default Action: <label><input type='radio' name='defaultActionInput' id='defaultActionInput' value='None' checked onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = true;">None</label>
+                    <label><input type='radio' name='defaultActionInput' id='defaultActionInput' value='Release'onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = false;">Release</label>
+                    <label><input type='radio' name='defaultActionInput' id='defaultActionInput' value='Burn'onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = false;">Burn</label>
+    <br>
+    Default Timeout Length: <input type='text' id='defaultTimeoutLengthInHoursInput' name='defaultTimeoutLengthInHoursInput' disabled=true> hours<br>
+    Initial PayerString:<br><textarea id='payerStringInput' name='payerStringInput' cols='80' rows='15'></textarea><br>
+    <input type='button' onclick='useBOPFormInput()' value='Create BOP'>
+    </form>
+    <div id='outputDiv'></div>
+    </center>
+  </body>
+</html>
