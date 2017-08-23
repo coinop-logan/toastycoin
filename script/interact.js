@@ -4,6 +4,12 @@ var states = {
   2: 'Expended'
 }
 
+var defaultActions = {
+  0: 'None',
+  1: 'Release',
+  2: 'Burn'
+}
+
 function logCallResult(err, res) {
     if (err) {
         alert("Error calling ddddBOP method: " + err.message);
@@ -24,8 +30,6 @@ function callGetFullState() {
 }
 
 window.addEventListener('load', function() {
-    window.address = "0xababcf2e5aa5fc100c44d7f9f6bbda24e61f7eed" //prompt("BOP address");
-
     if (typeof web3 !== 'undefined') {
         window.web3 = new Web3(web3.currentProvider);
     }
@@ -33,26 +37,37 @@ window.addEventListener('load', function() {
         alert("metamask/mist not detected. This site probably won't work for you. Download the metamask addon and try again!");
     }
     web3.version.getNetwork((err, netID) => {
-        if (netID != 1) {
-            alert("You aren't on the Ethereum main net! Try changing your metamask options to connect to the main network.");
+        if (netID == 1) {
+            console.log("You are on the Ethereum main net!");
+            window.address = "0xcE153d0F8D51ab11AeD053E2bB8Fbc365C14A080";
+            window.etherscanURL = "https://etherscan.io/address/"
         }
-    });
+        else if (netID == 3) {
+            console.log("You are on the Ropsten net!");
+            // window.address = "0xf2713308b9d647424af113fc33d38628e0c3ea25";
+            window.address = "0xa720855920ac3a9e6eac04c46840ec3096f9eb97";
+            window.etherscanURL = "https://ropsten.etherscan.io/address/";
+            $("h1").text($("h1").text() + " (ROPSTEN)");
+        }
+        else{
+          alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");
+        }
+        
+        window.BOP = {
+            "address": address,
+            "ABI": BOP_ABI,
+        };
+    
+        BOP.contract = web3.eth.contract(BOP.ABI);
+        BOP.contractInstance = BOP.contract.at(BOP.address);
+        
+        window.checkUserAddressesInterval = setInterval(checkForUserAddresses, 1000);
 
-    window.BOP = {
-        "address": address,
-        "ABI": BOP_ABI,
-    };
-
-    BOP.contract = web3.eth.contract(BOP.ABI);
-    BOP.contractInstance = BOP.contract.at(BOP.address);
-
-    window.checkUserAddressesInterval = setInterval(checkForUserAddresses, 1000);
-
-    web3.eth.getCode("0xababcf2e5aa5fc100c44d7f9f6bbda24e61f7eed",function(err,res){
+    web3.eth.getCode(window.address,function(err,res){
     if(res == "0x"){
       console.log("This Contract doesn't exist or was destroyed.")
       $('.insertAddress').text(BOP.address);
-      $('#etherscanLink').attr("href", `https://etherscan.io/address/${BOP.address}`);
+      $('#etherscanLink').attr("href", `${window.etherscanURL}${BOP.address}`);
       $('#BOPInfoOutput').text("Doesn't exist/Destroyed");
     }
     else{
@@ -62,7 +77,6 @@ window.addEventListener('load', function() {
               alert("Error calling asdfBOP method: " + err.message);
           }
           else{
-            console.log(res[4].toString());
             BOP['state'] = res[0].toString();
             BOP['payerString'] = res[1].toString();
             BOP['recipient'] = res[2].toString();
@@ -74,23 +88,19 @@ window.addEventListener('load', function() {
           }
           insertInstanceStatsInPage();
           if (states[Number(BOP.state)] == 'Open') $('#BOPTable').css("background-color", "rgb(204, 255, 204)");
-          if (states[Number(BOP.state)] == "Committed") $('#BOPTable').css("background-color", "blue");
+          if (states[Number(BOP.state)] == "Committed") $('#BOPTable').css("background-color", "cyan");
           if (states[Number(BOP.state)] == "Expended") $('#BOPTable').css("background-color", "grey");
           updateExtraInput();
         });
       }, 2000);
     }
     });
+  });
 });
 
 function insertInstanceStatsInPage(){
-  console.log(BOP.state);
-  if(true){
-  }
-  else{
-    console.log("sadfalkö")
     $('.insertAddress').text(BOP.address);
-    $('#etherscanLink').attr("href", `https://etherscan.io/address/${BOP.address}`);
+    $('#etherscanLink').attr("href", `${window.etherscanURL}${BOP.address}`);
     $('#BOPInfoOutput').text(states[BOP['state']]);
     web3.eth.getBalance(BOP.address, function(err, res){
       if (err) {
@@ -102,14 +112,14 @@ function insertInstanceStatsInPage(){
       }
     });
     $('#BOPFundsDepositedOutput').text(web3.fromWei(BOP['amountDeposited'], 'ether') + ' ETH');
-    $('#BOPFundsBurnedOutput').text(web3.fromWei(BOP['amountDeposited'], 'ether') + ' ETH');
+    $('#BOPFundsBurnedOutput').text(web3.fromWei(BOP['amountBurned'], 'ether') + ' ETH');
     $('#BOPFundsReleasedOutput').text(web3.fromWei(BOP['amountReleased'], 'ether') + ' ETH');
     BOP.contractInstance.commitThreshold(function(err, res){
       if (err) {
           alert("Error calling BOP method: " + err.message);
       }
       else {
-        BOP['commitThreshold'] = res;
+        BOP['commitThreshold'] = res.toString();
         $('#BOPCommitThresholdOutput').text(web3.fromWei(res,'ether') + ' ETH');
       }
     });
@@ -118,32 +128,73 @@ function insertInstanceStatsInPage(){
           alert("Error calling BOP method: " + err.message);
       }
       else {
-        BOP['payer'] = res;
+        BOP['payer'] = res.toString();
         $('#BOPPayerOutput').text(res)
       }
     });
-    $('#BOPRecipientOutput').text(BOP['recipient']);
     $('#BOPPayerStringOutput').text(BOP['payerString']);
     $('#BOPRecipientStringOutput').text(BOP['recipientString'], 'ether');
-  }
+    if(BOP['recipient'] == '0x0000000000000000000000000000000000000000'){
+      $('#BOPRecipientOutput').text("None");
+    }
+    else{
+      $('#BOPRecipientOutput').text(BOP['recipient']);
+    }
+    BOP.contractInstance.defaultAction(function(err, res){
+      if (err) {
+          alert("Error calling BOP method: " + err.message);
+      }
+      else {
+        BOP['defaultAction'] = res.toString();
+        $('#BOPDefaultActionOutput').text(defaultActions[Number(BOP['defaultAction'])])
+      }
+    });    
+}
+
+function callDefaultAction(){
+  BOP.contractInstance.callDefaultAction(logCallResult);
+}
+
+function delayDefaultAction(){
+  var delayDefaultActionInHours = Number($('input[type=text]', '#delayDefaultActionForm').val()); 
+  BOP.contractInstance.delayDefaultAction(logCallResult);
 }
 
 
 function updateExtraInput() {
 	var userHasAddress = (isUserAddressVisible());
-    var userIsPayer = (BOP.payer == web3.eth.defaultAccount);
-    var userIsRecipient = (BOP.recipient == web3.eth.defaultAccount);
-    var isNullRecipient = (BOP.recipient == '0x0000000000000000000000000000000000000000');
-
-    document.getElementById('payerFundsInputGroup').hidden = !userIsPayer;
-    document.getElementById('updatePayerStringInputGroup').hidden = !userIsPayer;
-
-    document.getElementById('updateRecipientStringInputGroup').hidden = !userIsRecipient;
-
-    document.getElementById('commitInputGroup').hidden = !isNullRecipient;
-
-	//document.getElementById('contributeInputGroup').hidden = !userHasAddress;
+  var userIsPayer = (BOP.payer == web3.eth.defaultAccount);
+  var userIsRecipient = (BOP.recipient == web3.eth.defaultAccount);
+  var isNullRecipient = (BOP.recipient == '0x0000000000000000000000000000000000000000');
+  
+  document.getElementById('payerFundsInputGroup').hidden = !userIsPayer;
+  document.getElementById('updatePayerStringInputGroup').hidden = !userIsPayer;
+  document.getElementById('updateRecipientStringInputGroup').hidden = !userIsRecipient;
+  document.getElementById('commitInputGroup').hidden = !isNullRecipient;
+  //document.getElementById('contributeInputGroup').hidden = !userHasAddress;
 	document.getElementById('recoverFundsInputGroup').hidden = !(userIsPayer && isNullRecipient);
+  web3.eth.getBlock("latest",
+    function(err,res){
+      if (err) {
+          alert("Error calling BOP method: " + err.message);
+      }
+      else{
+        var currentTime = res.timestamp;
+      }
+      if(Number(BOP.defaultTriggerTime) > currentTime || states[Number(BOP.state)] != 'Committed'){
+        document.getElementById('defaultActionInputGroup').hidden = true;
+      }
+      else
+      {
+        document.getElementById('defaultActionInputGroup').hidden = false;
+      }
+  });
+  
+  if(BOP.defaultAction == 'None' || states[Number(BOP.state)] != 'Committed'){
+    document.getElementById('delayDefaultActionForm').hidden = true;
+  }else{
+    document.getElementById('delayDefaultActionForm').hidden = false;
+  }
 }
 
 function isUserAddressVisible() {

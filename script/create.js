@@ -33,7 +33,7 @@ function useBOPFormInput() {
     }
     commitThresholdInEth = Number(commitThresholdInEth);
     
-    var defaultAction = $("#NewBOPForm #defaultActionInput").prop("checked", true).val();
+    var defaultAction = $('input[name=defaultActionInput]:checked', '#NewBOPForm').val(); 
     if (defaultAction == 'None') defaultAction = 0;
     else if (defaultAction == 'Release') defaultAction = 1;
     else if (defaultAction == 'Burn') defaultAction = 2;
@@ -54,7 +54,7 @@ function useBOPFormInput() {
             return;
         }
     }
-    
+    console.log(defaultAction);
     callNewBOP(valueInEth, payer, commitThresholdInEth, defaultAction, defaultTimeoutLengthInHours, payerString);
 }
 
@@ -72,15 +72,21 @@ window.addEventListener('load', function() {
         alert("metamask/mist not detected. This site probably won't work for you. Download the metamask addon and try again!");
     }
     web3.version.getNetwork((err, netID) => {
-        if (netID != 1) {
-            alert("You aren't on the Ethereum main net! Try changing your metamask options to connect to the main network.");
+        if (netID == 1) {
+            console.log("You are on the Ethereum main net!");
         }
+        else if (netID == 3) {
+            console.log("You are on the Ropsten net!");
+            BOP_FACTORY_ADDRESS = '0x9B9a993A36AcD108F251308AE28A82f8E41D01f8';
+        }
+        else{
+          alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");
+        }
+        window.BOPFactory = {
+            "address": BOP_FACTORY_ADDRESS,
+            "ABI": BOP_FACTORY_ABI
+        };
+        BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
+        BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
     });
-    
-    window.BOPFactory = {
-        "address": BOP_FACTORY_ADDRESS,
-        "ABI": BOP_FACTORY_ABI
-    };
-    BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
-    BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
 });
