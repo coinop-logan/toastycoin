@@ -1,4 +1,4 @@
-const BOP_FACTORY_ADDRESS = '0x1953da4bceBC9579156586C4528aF151381d6Bb6';
+var BOP_FACTORY_ADDRESS = '0x1953da4bceBC9579156586C4528aF151381d6Bb6'; //////////////////needs to be changed to const in final version, var for test purposes
 const BOP_FACTORY_ABI = [
 	{
 		"constant": false,
