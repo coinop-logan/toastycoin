@@ -8,18 +8,12 @@
     <script type="text/javascript" src='../script/abiDefinitions/bop_abi.js'></script>
     <script type="text/javascript" src='../script/abiDefinitions/bop_factory_abi.js'></script>
     <script type="text/javascript" src="../script/interact.js"></script>
-    <!-- <script type="text/javascript" src="../script/interact_temp.js"></script> -->
   </head>
   <body>
-    <input type='button' onclick='callCancel()' value='Recover'>
-    <input type='button' onclick='callGetFullState()' value='Get full state'>
-
+    <h1 align="center">Toastycoin</h1>
+    <h2 align="center">Interact</h2>
     <table><tr>
-        <td width='20%'>
-            <a href='/'>Home</a><br>
-            <a href='viewBOPs.php'>View BOPs</a><br><br>
-        </td>
-        <td width='60%'>
+        <td width='100%'>
             <div align='center' color=blue id='userAddress'></div>
         </td>
         <td width='60%'><td>
@@ -45,7 +39,7 @@
                     <td width='35%' align='center'>
                         <form id='payerFundsInputGroup' hidden='true'>
                             <input type='text' name='amount' size=7><br>
-    						<input type='button' value='Add Funds' onClick='addFundsFromForm()'>
+    						            <input type='button' value='Add Funds' onClick='addFundsFromForm()'>
                             <input type='button' value='Release' onClick='releaseFromForm()'>
                             <input type='button' value='Burn' onClick='burnFromForm()'>
                         </form>
@@ -74,8 +68,22 @@
                     <td width='35%' align='center'>
                         Commit Threshold:<br>
                         <font color="#cc7700">
-                        <span id='BOPCommitThresholdOutput'>loading</span>
+                        <span id='BOPCommitThresholdOutput'>loading...</span>
                         </font>
+                    </td>
+                    <td align='center'>
+                        Default Action:<br>
+                        <font color="#cf7700">
+                        <span id='BOPDefaultActionOutput'>loading...</span>
+                        </font>
+                    <div id='defaultActionInputGroup' hidden='true'>
+                      <input type='button' value='callDefaultAction' onClick='callDefaultAction()'>
+                    </div>
+                    </td>
+                    <td align='center'>
+                        <form id="delayDefaultActionForm" hidden='true'>
+                          <input type='button' value='delayDefaultAction' onClick='delayDefaultAction()'>
+                        </form>
                     </td>
                 </tr>
             </table>
@@ -95,7 +103,7 @@
                 Payer String:<br>
                 <div id='updatePayerStringInputGroup' hidden='true'>
     				<button id='payerStringUpdateStartButton' onclick="startPayerStringUpdate()">Update</button>
-    				<textarea id='payerStringUpdateTextarea' rows='15' cols='80' hidden='true'>asdfasdf</textarea><br>
+    				<textarea id='payerStringUpdateTextarea' rows='15' cols='80' hidden='true'></textarea><br>
     				<button id='payerStringUpdateCommitButton' hidden='true' onClick="commitPayerStringUpdate()">Commit Update</button>
     				<button id='payerStringUpdateCancelButton' hidden='true' onClick="cancelPayerStringUpdate()">Cancel</button>
     			</div>
