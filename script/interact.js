@@ -45,22 +45,22 @@ window.addEventListener('load', function() {
         else if (netID == 3) {
             console.log("You are on the Ropsten net!");
             // window.address = "0xf2713308b9d647424af113fc33d38628e0c3ea25";
-            window.address = "0xa720855920ac3a9e6eac04c46840ec3096f9eb97";
+            window.address = "0x6568db7ec50c44598e9e3165ba2c48063c845291";
             window.etherscanURL = "https://ropsten.etherscan.io/address/";
             $("h1").text($("h1").text() + " (ROPSTEN)");
         }
         else{
           alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");
         }
-        
+
         window.BOP = {
             "address": address,
             "ABI": BOP_ABI,
         };
-    
+
         BOP.contract = web3.eth.contract(BOP.ABI);
         BOP.contractInstance = BOP.contract.at(BOP.address);
-        
+
         window.checkUserAddressesInterval = setInterval(checkForUserAddresses, 1000);
 
     web3.eth.getCode(window.address,function(err,res){
@@ -148,7 +148,7 @@ function insertInstanceStatsInPage(){
         BOP['defaultAction'] = res.toString();
         $('#BOPDefaultActionOutput').text(defaultActions[Number(BOP['defaultAction'])])
       }
-    });    
+    });
 }
 
 function callDefaultAction(){
@@ -156,7 +156,7 @@ function callDefaultAction(){
 }
 
 function delayDefaultAction(){
-  var delayDefaultActionInHours = Number($('input[type=text]', '#delayDefaultActionForm').val()); 
+  var delayDefaultActionInHours = Number($('input[type=text]', '#delayDefaultActionForm').val());
   BOP.contractInstance.delayDefaultAction(logCallResult);
 }
 
@@ -166,7 +166,7 @@ function updateExtraInput() {
   var userIsPayer = (BOP.payer == web3.eth.defaultAccount);
   var userIsRecipient = (BOP.recipient == web3.eth.defaultAccount);
   var isNullRecipient = (BOP.recipient == '0x0000000000000000000000000000000000000000');
-  
+
   document.getElementById('payerFundsInputGroup').hidden = !userIsPayer;
   document.getElementById('updatePayerStringInputGroup').hidden = !userIsPayer;
   document.getElementById('updateRecipientStringInputGroup').hidden = !userIsRecipient;
@@ -181,19 +181,19 @@ function updateExtraInput() {
       else{
         var currentTime = res.timestamp;
       }
-      if(Number(BOP.defaultTriggerTime) > currentTime || states[Number(BOP.state)] != 'Committed'){
-        document.getElementById('defaultActionInputGroup').hidden = true;
+      if((defaultActions[Number(BOP.defaultAction)] != 'None' && Number(BOP.defaultTriggerTime) < currentTime && states[Number(BOP.state)] == 'Committed') && (userIsRecipient || userIsPayer)){
+        document.getElementById('defaultActionInputGroup').hidden = false;
       }
       else
       {
-        document.getElementById('defaultActionInputGroup').hidden = false;
+        document.getElementById('defaultActionInputGroup').hidden = true;
       }
   });
-  
-  if(BOP.defaultAction == 'None' || states[Number(BOP.state)] != 'Committed'){
-    document.getElementById('delayDefaultActionForm').hidden = true;
-  }else{
+
+  if((defaultActions[Number(BOP.defaultAction)] != 'None' && states[Number(BOP.state)] == 'Committed') && (userIsRecipient || userIsPayer)){
     document.getElementById('delayDefaultActionForm').hidden = false;
+  }else{
+    document.getElementById('delayDefaultActionForm').hidden = true;
   }
 }
 
