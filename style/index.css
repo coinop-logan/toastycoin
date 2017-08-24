@@ -1,0 +1,8 @@
+html{
+  height:100%;
+}
+body{
+  background: url("../imgs/pen_and_notebook.jpg");
+  background-size: auto;
+  background-position: center;
+}

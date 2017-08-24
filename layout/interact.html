@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tokentoast - Create BOP</title>
+    <script type="text/javascript" src="../script/lib/web3.js"></script>
+    <script type="text/javascript" src="../script/lib/jquery.min.js"></script>
+    <script type="text/javascript" src='../script/abiDefinitions/bop_abi.js'></script>
+    <script type="text/javascript" src='../script/abiDefinitions/bop_factory_abi.js'></script>
+    <script type="text/javascript" src="../script/interact.js"></script>
+  </head>
+  <body>
+    <h1 align="center">Toastycoin</h1>
+    <h2 align="center">Interact</h2>
+    <table><tr>
+        <td width='100%'>
+            <div align='center' color=blue id='userAddress'></div>
+        </td>
+        <td width='60%'><td>
+    </tr></table>
+    <br>
+    <table id='BOPTable' border=1 width='100%' align='center'>
+        <tr width='100%'><td width='100%' align='center' colspan=2>
+            <b>BOP at address </b>
+            <font color="#0000ff">
+              <span class="insertAddress">loading...</span>
+            <br>
+            </font>
+            <small><a id="etherscanLink" href=''>View on etherscan.io</a></small><br>
+            <big><big>State: <span id='BOPInfoOutput'>loading...</span><br>
+            <font color='blue'><span id='BOPBalanceOutput' color='blue'><span>loading...</font></big><br>
+            held in BOP</big><br>
+    		<form id='recoverFundsInputGroup' hidden='true'>
+    			<input type='button' value='Cancel BOP and Recover Funds' onClick='callRecoverFunds()'>
+    		</form>
+            <br>
+            <table width='40%'>
+                <tr width='100%'>
+                    <td width='35%' align='center'>
+                        <form id='payerFundsInputGroup' hidden='true'>
+                            <input type='text' name='amount' size=7><br>
+    						            <input type='button' value='Add Funds' onClick='addFundsFromForm()'>
+                            <input type='button' value='Release' onClick='releaseFromForm()'>
+                            <input type='button' value='Burn' onClick='burnFromForm()'>
+                        </form>
+                    </td>
+                    <td>
+                        <table width='100%'>
+                            <tr width='100%'>
+                                <td align='right'><span id='BOPFundsDepositedOutput'>loading...</span> </td>
+                                <td> deposited</td>
+                            </tr><tr width='100%'>
+                                <td align='right'><font color='red'><span id='BOPFundsBurnedOutput' color='red'>loading...</span></font> </td>
+                                <td> burned</td>
+                            </tr><tr width='100%'>
+                                <td align='right'><font color='green'><span id='BOPFundsReleasedOutput' color='blue'>loading...</span></font> </td>
+                                <td> released</td>
+                            </tr>
+                            </tr><tr>
+                                <td> </td>
+                            </tr><tr width='100%'>
+                                <big>
+                                <td align='right'></td>
+                                </big>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width='35%' align='center'>
+                        Commit Threshold:<br>
+                        <font color="#cc7700">
+                        <span id='BOPCommitThresholdOutput'>loading...</span>
+                        </font>
+                    </td>
+                    <td align='center'>
+                        Default Action:<br>
+                        <font color="#cf7700">
+                        <span id='BOPDefaultActionOutput'>loading...</span>
+                        </font>
+                    <div id='defaultActionInputGroup' hidden='true'>
+                      <input type='button' value='callDefaultAction' onClick='callDefaultAction()'>
+                    </div>
+                    </td>
+                    <td align='center'>
+                        <form id="delayDefaultActionForm" hidden='true'>
+                          <input type='button' value='delayDefaultAction' onClick='delayDefaultAction()'>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>
+        <tr>
+            <td width='50%' align='center'>
+                Payer:<br><span id='BOPPayerOutput'>loading...</span>
+            </td>
+            <td width='50%' align='center'>
+                Recipient:<br>
+                <span id='BOPRecipientOutput'>loding...</span>
+                <div id='commitInputGroup' hidden='true'><button onclick="callCommit()">Commit to BOP</button></div>
+            </td>
+        </tr>
+        <tr>
+            <td align='center'>
+                Payer String:<br>
+                <div id='updatePayerStringInputGroup' hidden='true'>
+    				<button id='payerStringUpdateStartButton' onclick="startPayerStringUpdate()">Update</button>
+    				<textarea id='payerStringUpdateTextarea' rows='15' cols='80' hidden='true'></textarea><br>
+    				<button id='payerStringUpdateCommitButton' hidden='true' onClick="commitPayerStringUpdate()">Commit Update</button>
+    				<button id='payerStringUpdateCancelButton' hidden='true' onClick="cancelPayerStringUpdate()">Cancel</button>
+    			</div>
+                <div id='BOPPayerStringOutput' align='left'></div>
+            </td>
+            <td align='center'>
+                Recipient String:<br>
+                <div id='updateRecipientStringInputGroup' hidden='true'>
+    				<button id='recipientStringUpdateStartButton' onclick="startRecipientStringUpdate()">Update</button>
+    				<textarea id='recipientStringUpdateTextarea' rows='15' cols='80' hidden='true'></textarea><br>
+    				<button id='recipientStringUpdateCommitButton' hidden='true' onClick="commitRecipientStringUpdate()">Commit Update</button>
+    				<button id='recipientStringUpdateCancelButton' hidden='true' onClick="cancelRecipientStringUpdate()">Cancel</button>
+    			</div>
+                <div id='BOPRecipientStringOutput' align='left'></div>
+            </td>
+        </tr>
+    </table>
+    <br>
+  </body>
+</html>
