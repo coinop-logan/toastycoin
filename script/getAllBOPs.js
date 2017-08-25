@@ -29,13 +29,6 @@ window.addEventListener('load', function() {
         BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
         BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
         
-        window.BOPFactory = {
-            "address": BOP_FACTORY_ADDRESS,
-            "ABI": BOP_FACTORY_ABI
-        };
-        BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
-        BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
-        
         //get all newBOP events
         window.BOPs = [];
         window.event = BOPFactory.contractInstance.NewBOP({}, {"fromBlock":0});//NewBOP is an event, not a method; it returns an event object.
