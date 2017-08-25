@@ -93,8 +93,8 @@ contract BurnableOpenPayment {
     function getFullState()
     public
     constant
-    returns (State, string, address, string, uint, uint, uint, uint) {
-        return (state, payerString, recipient, recipientString, amountDeposited, amountBurned, amountReleased, defaultTriggerTime);
+    returns (State, address, string, address, string, uint, uint, uint, uint, uint, DefaultAction, uint, uint) {
+        return (state, payer, payerString, recipient, recipientString, this.balance, commitThreshold, amountDeposited, amountBurned, amountReleased, defaultAction, defaultTimeoutLength, defaultTriggerTime);
     }
     
     function addFunds()
