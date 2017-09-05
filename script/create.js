@@ -8,7 +8,7 @@ function callNewBOP(valueInEth, payer, commitThresholdInEth, defaultAction, defa
     var valueInWei = web3.toWei(valueInEth, 'ether');
     var commitThresholdInWei = web3.toWei(commitThresholdInEth, 'ether');
     var defaultTimeoutLengthInSeconds = defaultTimeoutLengthInHours*60*60;
-    
+
     BOPFactory.contractInstance.newBurnableOpenPayment(payer, commitThresholdInWei, defaultAction, defaultTimeoutLengthInSeconds, payerString, {'from':web3.eth.accounts[0],'value': valueInWei}, handleNewBOPResult);
 }
 
@@ -19,25 +19,25 @@ function useBOPFormInput() {
         return;
     }
     valueInEth = Number(valueInEth);
-    
+
     var payer = $("#NewBOPForm #payerInput").val();
     if (payer == '') {
         alert("Must specify payer!");
         return;
     }
-    
+
     var commitThresholdInEth = $("#NewBOPForm #commitThresholdInput").val();
     if (commitThresholdInEth == '') {
         alert("Must specify commit threshold!");
         return;
     }
     commitThresholdInEth = Number(commitThresholdInEth);
-    
-    var defaultAction = $('input[name=defaultActionInput]:checked', '#NewBOPForm').val(); 
+
+    var defaultAction = $('input[name=defaultActionInput]:checked', '#NewBOPForm').val();
     if (defaultAction == 'None') defaultAction = 0;
     else if (defaultAction == 'Release') defaultAction = 1;
     else if (defaultAction == 'Burn') defaultAction = 2;
-    
+
     if (defaultAction != 0) {
         var defaultTimeoutLengthInHours = $("#NewBOPForm #defaultTimeoutLengthInHoursInput").val();
         if (defaultTimeoutLengthInHours == '') {
@@ -47,7 +47,7 @@ function useBOPFormInput() {
         defaultTimeoutLengthInHours = Number(defaultTimeoutLengthInHours);
     }
     else var defaultTimeoutLengthInHours = 0;
-    
+
     var payerString = $("#NewBOPForm #payerStringInput").val();
     if (payerString == '') {
         if (!confirm("Initial payerString is empty! Are you sure you want to open a BOP without a payerString?")) {
@@ -77,7 +77,7 @@ window.addEventListener('load', function() {
         }
         else if (netID == 3) {
             console.log("You are on the Ropsten net!");
-            BOP_FACTORY_ADDRESS = '0x9B9a993A36AcD108F251308AE28A82f8E41D01f8';
+            BOP_FACTORY_ADDRESS = '0xf26083e4BeFc752DF93fa0402D5804649f0046C0';
         }
         else{
           alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");

@@ -10,9 +10,32 @@ var defaultActions = {
   2: 'Burn'
 }
 
+function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+function secondsToHms(d) {
+	d = Number(d);
+	var h = Math.floor(d / 3600);
+	var m = Math.floor(d % 3600 / 60);
+	var s = Math.floor(d % 3600 % 60);
+	return ((h > 0 ? h + " h " + " und " + (m < 10 ? "0" : "") : "") + m +" min" + " " + (s < 10 ? "0" : "") + s + " sec");
+}
+
 function logCallResult(err, res) {
     if (err) {
-        alert("Error calling ddddBOP method: " + err.message);
+        console.log("Error calling ddddBOP method: " + err.message);
     }
     else {
         return res;
@@ -34,24 +57,28 @@ window.addEventListener('load', function() {
         window.web3 = new Web3(web3.currentProvider);
     }
     else {
-        alert("metamask/mist not detected. This site probably won't work for you. Download the metamask addon and try again!");
+        console.log("metamask/mist not detected. This site probably won't work for you. Download the metamask addon and try again!");
     }
+
+    window.address = getUrlParameter('contractAddress');
+
     web3.version.getNetwork((err, netID) => {
         if (netID == 1) {
             console.log("You are on the Ethereum main net!");
-            window.address = "0xcE153d0F8D51ab11AeD053E2bB8Fbc365C14A080";
+            if(typeof window.address == "undefined") window.address = "0xcE153d0F8D51ab11AeD053E2bB8Fbc365C14A080";
             window.etherscanURL = "https://etherscan.io/address/"
         }
         else if (netID == 3) {
             console.log("You are on the Ropsten net!");
             // window.address = "0xf2713308b9d647424af113fc33d38628e0c3ea25";
-            window.address = "0x6568db7ec50c44598e9e3165ba2c48063c845291";
+            if(typeof window.address == "undefined") window.address = "0x6071b07603F1625BC67E37BFB37a484F1f372b62";
             window.etherscanURL = "https://ropsten.etherscan.io/address/";
             $("h1").text($("h1").text() + " (ROPSTEN)");
         }
         else{
-          alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");
+          console.log("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");
         }
+
 
         window.BOP = {
             "address": address,
@@ -63,28 +90,46 @@ window.addEventListener('load', function() {
 
         window.checkUserAddressesInterval = setInterval(checkForUserAddresses, 1000);
 
-    web3.eth.getCode(window.address,function(err,res){
+    window.getFullStateInterval = setInterval(function(){
+      web3.eth.getCode(window.address,function(err,res){
+        console.log(res);
     if(res == "0x"){
       console.log("This Contract doesn't exist or was destroyed.")
       $('.insertAddress').text(BOP.address);
       $('#etherscanLink').attr("href", `${window.etherscanURL}${BOP.address}`);
       $('#BOPInfoOutput').text("Doesn't exist/Destroyed");
+      $('#BOPPayerOutput').text("None")
+      $('#BOPRecipientOutput').text("None")
+      $('#BOPPayerStringOutput').text("None");
+      $('#BOPRecipientStringOutput').text("None");
+      $('#BOPBalanceOutput').text("None");
+      $('#BOPCommitThresholdOutput').text("None");
+      $('#BOPFundsDepositedOutput').text("None");
+      $('#BOPFundsBurnedOutput').text("None");
+      $('#BOPFundsReleasedOutput').text("None");
+      $('#BOPDefaultActionOutput').text("None");
+      $('#BOPDefaultTimeoutLength').text("None");
+      $('#BOPTable').css("background-color", "grey");
     }
     else{
-      window.getFullState = setInterval(function(){
         BOP.contractInstance.getFullState(function(err, res){
           if (err) {
-              alert("Error calling asdfBOP method: " + err.message);
+              console.log("Error calling BOP method: " + err.message);
           }
           else{
             BOP['state'] = res[0].toString();
-            BOP['payerString'] = res[1].toString();
-            BOP['recipient'] = res[2].toString();
-            BOP['recipientString'] = res[3].toString();
-            BOP['amountDeposited'] = res[4].toString();
-            BOP['amountBurned'] = res[5].toString();
-            BOP['amountReleased'] = res[6].toString();
-            BOP['defaultTriggerTime'] = res[7].toString();
+            BOP['payer'] = res[1].toString();
+            BOP['payerString'] = res[2].toString();
+            BOP['recipient'] = res[3].toString();
+            BOP['recipientString'] = res[4].toString();
+            BOP['balance'] = res[5].toString();
+            BOP['commitThreshold'] = res[6].toString();
+            BOP['amountDeposited'] = res[7].toString();
+            BOP['amountBurned'] = res[8].toString();
+            BOP['amountReleased'] = res[9].toString();
+            BOP['defaultAction'] = res[10].toString();
+            BOP['defaultTimeoutLength'] = res[11].toString();
+            BOP['defaultTriggerTime'] = res[12].toString();
           }
           insertInstanceStatsInPage();
           if (states[Number(BOP.state)] == 'Open') $('#BOPTable').css("background-color", "rgb(204, 255, 204)");
@@ -92,63 +137,27 @@ window.addEventListener('load', function() {
           if (states[Number(BOP.state)] == "Expended") $('#BOPTable').css("background-color", "grey");
           updateExtraInput();
         });
-      }, 2000);
     }
-    });
+  })
+},3000);
   });
 });
 
 function insertInstanceStatsInPage(){
     $('.insertAddress').text(BOP.address);
     $('#etherscanLink').attr("href", `${window.etherscanURL}${BOP.address}`);
-    $('#BOPInfoOutput').text(states[BOP['state']]);
-    web3.eth.getBalance(BOP.address, function(err, res){
-      if (err) {
-          alert("Error calling BOP method: " + err.message);
-      }
-      else {
-        BOP['balance'] = res;
-      $('#BOPBalanceOutput').text(web3.fromWei(res, 'ether') + ' ETH');
-      }
-    });
-    $('#BOPFundsDepositedOutput').text(web3.fromWei(BOP['amountDeposited'], 'ether') + ' ETH');
-    $('#BOPFundsBurnedOutput').text(web3.fromWei(BOP['amountBurned'], 'ether') + ' ETH');
-    $('#BOPFundsReleasedOutput').text(web3.fromWei(BOP['amountReleased'], 'ether') + ' ETH');
-    BOP.contractInstance.commitThreshold(function(err, res){
-      if (err) {
-          alert("Error calling BOP method: " + err.message);
-      }
-      else {
-        BOP['commitThreshold'] = res.toString();
-        $('#BOPCommitThresholdOutput').text(web3.fromWei(res,'ether') + ' ETH');
-      }
-    });
-    BOP.contractInstance.payer(function(err, res){
-      if (err) {
-          alert("Error calling BOP method: " + err.message);
-      }
-      else {
-        BOP['payer'] = res.toString();
-        $('#BOPPayerOutput').text(res)
-      }
-    });
-    $('#BOPPayerStringOutput').text(BOP['payerString']);
-    $('#BOPRecipientStringOutput').text(BOP['recipientString'], 'ether');
-    if(BOP['recipient'] == '0x0000000000000000000000000000000000000000'){
-      $('#BOPRecipientOutput').text("None");
-    }
-    else{
-      $('#BOPRecipientOutput').text(BOP['recipient']);
-    }
-    BOP.contractInstance.defaultAction(function(err, res){
-      if (err) {
-          alert("Error calling BOP method: " + err.message);
-      }
-      else {
-        BOP['defaultAction'] = res.toString();
-        $('#BOPDefaultActionOutput').text(defaultActions[Number(BOP['defaultAction'])])
-      }
-    });
+    $('#BOPInfoOutput').text(states[BOP.state]);
+    $('#BOPPayerOutput').text(BOP.payer)
+    $('#BOPPayerStringOutput').text(BOP.payerString);
+    BOP.recipient == '0x0000000000000000000000000000000000000000' ? $('#BOPRecipientOutput').text("None") : $('#BOPRecipientOutput').text(BOP.recipient);
+    $('#BOPRecipientStringOutput').text(BOP.recipientString, 'ether');
+    $('#BOPBalanceOutput').text(web3.fromWei(BOP.balance, 'ether') + ' ETH');
+    $('#BOPCommitThresholdOutput').text(web3.fromWei(BOP.commitThreshold,'ether') + ' ETH');
+    $('#BOPFundsDepositedOutput').text(web3.fromWei(BOP.amountDeposited, 'ether') + ' ETH');
+    $('#BOPFundsBurnedOutput').text(web3.fromWei(BOP.amountBurned, 'ether') + ' ETH');
+    $('#BOPFundsReleasedOutput').text(web3.fromWei(BOP.amountBurned, 'ether') + ' ETH');
+    $('#BOPDefaultActionOutput').text(defaultActions[Number(BOP.defaultAction)]);
+    $('#BOPDefaultTimeoutLength').text(secondsToHms(BOP.defaultTimeoutLength));
 }
 
 function callDefaultAction(){
@@ -156,7 +165,7 @@ function callDefaultAction(){
 }
 
 function delayDefaultAction(){
-  var delayDefaultActionInHours = Number($('input[type=text]', '#delayDefaultActionForm').val());
+  // var delayDefaultActionInHours = Number($('input[type=text]', '#delayDefaultActionForm').val());
   BOP.contractInstance.delayDefaultAction(logCallResult);
 }
 
@@ -176,17 +185,23 @@ function updateExtraInput() {
   web3.eth.getBlock("latest",
     function(err,res){
       if (err) {
-          alert("Error calling BOP method: " + err.message);
+          console.log("Error calling BOP method: " + err.message);
       }
       else{
         var currentTime = res.timestamp;
       }
       if((defaultActions[Number(BOP.defaultAction)] != 'None' && Number(BOP.defaultTriggerTime) < currentTime && states[Number(BOP.state)] == 'Committed') && (userIsRecipient || userIsPayer)){
         document.getElementById('defaultActionInputGroup').hidden = false;
+        $('#BOPDefaultActionTriggerTime').text(new Date(BOP.defaultTriggerTime * 1000));
+        $('#BOPDefaultActionTriggerTime').css("color", "red");
       }
       else
       {
         document.getElementById('defaultActionInputGroup').hidden = true;
+        differenceTime = Number(BOP.defaultTriggerTime) - res.timestamp;
+        if(0 < differenceTime && differenceTime <= 86400){
+          $('#BOPDefaultActionTriggerTime').text("Remaining Time: " + secondsToHms(differenceTime));
+        }
       }
   });
 
@@ -276,21 +291,21 @@ function commitPayerStringUpdate() {
 }
 
 function handleCommitResult(err, res) {
-    if (err) alert(err.message);
+    if (err) console.log(err.message);
 }
 function callCommit() {
     BOP.contractInstance.commit({'value':BOP.commitThreshold}, handleCommitResult);
 }
 
 function handleRecoverFundsResult(err, res) {
-	if (err) alert(err.message);
+	if (err) console.log(err.message);
 }
 function callRecoverFunds() {
 	BOP.contractInstance.recoverFunds(handleRecoverFundsResult);
 }
 
 function handleReleaseResult(err, res) {
-    if (err) alert(err.message);
+    if (err) console.log(err.message);
 }
 function callRelease(amountInEth) {
     BOP.contractInstance.release(web3.toWei(amountInEth,'ether'), handleReleaseResult);
@@ -303,7 +318,7 @@ function releaseFromForm() {
 }
 
 function handleBurnResult(err, res) {
-    if (err) alert(err.message);
+    if (err) console.log(err.message);
 }
 function callBurn(amountInEth) {
     BOP.contractInstance.burn(web3.toWei(amountInEth,'ether'), handleBurnResult);
@@ -316,7 +331,7 @@ function burnFromForm() {
 }
 
 function handleAddFundsResult(err, res) {
-	if (err) alert(err.message);
+	if (err) console.log(err.message);
 }
 function callAddFunds(includedEth) {
 	BOP.contractInstance.addFunds({'value':web3.toWei(includedEth,'ether')}, handleAddFundsResult)
@@ -329,14 +344,14 @@ function addFundsFromForm() {
 }
 
 function handleUpdateRecipientStringResult(err, res) {
-    if (err) alert(err.message);
+    if (err) console.log(err.message);
 }
 function callUpdateRecipientString(newString) {
     BOP.contractInstance.setRecipientString(newString, handleUpdateRecipientStringResult);
 }
 
 function handleUpdatePayerStringResult(err, res) {
-    if (err) alert(err.message);
+    if (err) console.log(err.message);
 }
 function callUpdatePayerString(newString) {
     BOP.contractInstance.setPayerString(newString, handleUpdatePayerStringResult);
