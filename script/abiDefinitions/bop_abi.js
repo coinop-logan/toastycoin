@@ -8,6 +8,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -19,6 +20,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -28,12 +30,9 @@ const BOP_ABI = [{
 			}
 		],
 		"name": "release",
-		"outputs": [{
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -41,6 +40,7 @@ const BOP_ABI = [{
 		"name": "commit",
 		"outputs": [],
 		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -50,12 +50,9 @@ const BOP_ABI = [{
 			}
 		],
 		"name": "burn",
-		"outputs": [{
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -63,6 +60,7 @@ const BOP_ABI = [{
 		"name": "delayDefaultAction",
 		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -74,6 +72,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -85,6 +84,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -96,6 +96,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -103,6 +104,7 @@ const BOP_ABI = [{
 		"name": "callDefaultAction",
 		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -114,6 +116,7 @@ const BOP_ABI = [{
 		"name": "setPayerString",
 		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -122,6 +125,9 @@ const BOP_ABI = [{
 		"outputs": [{
 				"name": "",
 				"type": "uint8"
+			}, {
+				"name": "",
+				"type": "address"
 			}, {
 				"name": "",
 				"type": "string"
@@ -143,9 +149,22 @@ const BOP_ABI = [{
 			}, {
 				"name": "",
 				"type": "uint256"
+			}, {
+				"name": "",
+				"type": "uint256"
+			}, {
+				"name": "",
+				"type": "uint8"
+			}, {
+				"name": "",
+				"type": "uint256"
+			}, {
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -153,6 +172,7 @@ const BOP_ABI = [{
 		"name": "addFunds",
 		"outputs": [],
 		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -164,6 +184,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -171,6 +192,7 @@ const BOP_ABI = [{
 		"name": "recoverFunds",
 		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -182,6 +204,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": false,
@@ -193,6 +216,7 @@ const BOP_ABI = [{
 		"name": "setRecipientString",
 		"outputs": [],
 		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -204,6 +228,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -215,6 +240,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -226,6 +252,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -237,6 +264,7 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -248,14 +276,12 @@ const BOP_ABI = [{
 			}
 		],
 		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"inputs": [{
 				"name": "_payer",
 				"type": "address"
-			}, {
-				"name": "_payerString",
-				"type": "string"
 			}, {
 				"name": "_commitThreshold",
 				"type": "uint256"
@@ -265,10 +291,40 @@ const BOP_ABI = [{
 			}, {
 				"name": "_defaultTimeoutLength",
 				"type": "uint256"
+			}, {
+				"name": "_payerString",
+				"type": "string"
 			}
 		],
 		"payable": true,
+		"stateMutability": "payable",
 		"type": "constructor"
+	}, {
+		"anonymous": false,
+		"inputs": [{
+				"indexed": false,
+				"name": "payer",
+				"type": "address"
+			}, {
+				"indexed": false,
+				"name": "commitThreshold",
+				"type": "uint256"
+			}, {
+				"indexed": false,
+				"name": "defaultAction",
+				"type": "uint8"
+			}, {
+				"indexed": false,
+				"name": "defaultTimeoutLength",
+				"type": "uint256"
+			}, {
+				"indexed": false,
+				"name": "initialPayerString",
+				"type": "string"
+			}
+		],
+		"name": "Created",
+		"type": "event"
 	}, {
 		"anonymous": false,
 		"inputs": [{

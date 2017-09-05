@@ -1,6 +1,5 @@
-var BOP_FACTORY_ADDRESS = '0x1953da4bceBC9579156586C4528aF151381d6Bb6'; //////////////////needs to be changed to const in final version, var for test purposes
-const BOP_FACTORY_ABI = [
-	{
+var BOP_FACTORY_ADDRESS = '0xd7f66E73ebFA13AA2e0947D577F7626752FCd6c5'; //////////////////needs to be changed to const in final version, var for test purposes
+const BOP_FACTORY_ABI = [{
 		"constant": false,
 		"inputs": [{
 				"name": "payer",
@@ -26,6 +25,7 @@ const BOP_FACTORY_ABI = [
 			}
 		],
 		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	}, {
 		"anonymous": false,
