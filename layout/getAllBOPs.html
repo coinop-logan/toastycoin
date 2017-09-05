@@ -5,11 +5,130 @@
     <title>Toastycoin - get BOP addrs</title>
     <script type="text/javascript" src='../script/lib/web3.js'></script>
     <script type="text/javascript" src='../script/lib/jquery.min.js'></script>
+    <script type="text/javascript" src='../script/lib/constants.js'></script>
     <script type="text/javascript" src='../script/abiDefinitions/bop_abi.js'></script>
     <script type="text/javascript" src='../script/abiDefinitions/bop_factory_abi.js'></script>
     <script type="text/javascript" src='../script/getAllBOPs.js'></script>
+    <script type="text/javascript" src="../script/tableFilter.js"></script>
+    <link rel="stylesheet" href="../style/getAllBOPs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-    
+
+    <center><h1><b>Browse BOPs</b></h1><br></center>
+    <a href='/'>Home</a>
+    <input id="resetFilterButton" type="button" value="Reset Filter"><br><br>
+    <table border=1>
+      <thead>
+        <tr>
+          <td>State
+            <select id="stateSelect">
+              <option value="All">All</option>
+              <option value="Open">Open</option>
+              <option value="Committed">Committed</option>
+              <option value="Open_Committed">Open/Committed</option>
+              <option value="Expended">Expended</option>
+            </select>
+          </td>
+          <td>
+            Addresses<br>
+            <input type="text" name="addressFilter" placeholder="Enter Address to filter on.">
+          </td>
+          <td>
+            Payment Info<br>
+            (<span id="held" class="sortable">Held<i class="fa"aria-hidden="true"></i></span>/<span id="threshold" class="sortable">Threshold<i class="fa"aria-hidden="true"></i>)</span>
+          </td>
+          <td>
+            <span id="deposited" class="sortable">Deposited<i class="fa"aria-hidden="true"></i></span>/<br>
+            <font color='red'>
+              <span id="burned" class="sortable">Burned<i class="fa"aria-hidden="true"></i></span>
+            </font>/<br>
+            <font color='green'>
+              <span id="released" class="sortable">Released<i class="fa"aria-hidden="true"></i></span>
+            </font>
+          </td>
+          <td>
+            <span id="defaultAction">defaultAction<i class="fa"aria-hidden="true"></i></span>/<br>
+            <font color='red'>
+              <span id="defaultTimeoutLength">defaultTimeoutLength<i class="fa"aria-hidden="true"></i></span>
+            </font>/<br>
+            <font color='green'>
+              <span id="defaultTriggerTime">defaultTriggerTime<i class="fa"aria-hidden="true"></i></span>
+            </font>
+          </td>
+          <td>Payer String</td>
+          <td>Recipient String</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="mainTableRow">
+          <!-- if ($assoc['state'] == "Open") echo "<tr bgcolor='#ccffcc'>";
+          if ($assoc['state'] == "Committed") echo "<tr bgcolor='#ccccff'>";
+          if ($assoc['state'] == "Expended") echo "<tr bgcolor='#aaaaaa'>"; -->
+          <td class="state">
+            loading...
+          </td>
+          <td>
+            BOP address: <a href='' class='contractAddress'>loading...</a><br>
+            <br>
+            Payer: <font color="#00aa00" class="payerAddress">loading...</font><br>
+            <span class='recipientAddress'></span>
+            <!-- <a href='../layout/interact.html' class='recipientAddress'></a><font color='#5d00ff' ></font> -->
+          </td>
+          <td width='15%'>
+            <font color="blue">
+              <span class="balance">
+                loading...
+              </span> ETH
+            </font>held in BOP<br>
+            <font color="#cc7700">
+              <span class="commitThreshold">
+                loading...
+              </span>
+              ETH</font> commit threshold<br>
+          </td>
+          <td>
+              <font>
+                <span class="fundsDeposited">
+                  loading...
+                <span>
+              </font><br>
+              <font color='red'>
+                <span class="fundsBurned">
+                  loading...
+                </span>
+              </font><br>
+              <font color='green'>
+                <span class="fundsReleased">
+                  loading...
+                </span>
+              </font><br>
+          </td>
+          <td>
+              <font>
+                <span class="defaultAction">
+                  loading...
+                <span>
+              </font><br>
+              <font color='red'>
+                <span class="defaultTimeoutLength">
+                  loading...
+                </span>
+              </font><br>
+              <font color='green'>
+                <span class="defaultTriggerTime ">
+                  loading...
+                </span>
+              </font><br>
+          </td>
+          <td class="payerString" width='25%'>
+            loading...<br>
+          </td>
+          <td class="recipientString" width='25%'>
+            loading...<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </body>
 </html>
