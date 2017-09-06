@@ -20,50 +20,49 @@ function onGetFullState(err, res, addresse) {
     bopObject['defaultTriggerTime'] = res[12].toString();
   }
   BOPs.push(bopObject);
+  buildBOPRow();
 }
 
-function buildBOPRows(){
-  for(var bopCount = 0; bopCount < BOPs.length; bopCount++){
-      if(bopCount !== 0) $("tbody").append($(".mainTableRow").first().clone());
-      // console.log(STATES_MAPPING[BOPs[bopCount].state]);
-      switch(STATES_MAPPING[BOPs[bopCount].state]){
-        case("Open"):
-          $(`.state:eq(${bopCount})`).parent().css("background-color", "aquamarine");
-          break;
-        case("Committed"):
-          $(`.state:eq(${bopCount})`).parent().css("background-color", "cyan");
-          break;
-        case("Expended"):
-          $(`.state:eq(${bopCount})`).parent().css("background-color", "grey");
-          break;
-      }
-      $(`.state:eq(${bopCount})`).text(STATES_MAPPING[BOPs[bopCount].state]);
-      $(`.contractAddress:eq(${bopCount})`).text(BOPs[bopCount].contractAddress);
-      $(`.contractAddress:eq(${bopCount})`).attr("href", `../layout/interact.html?contractAddress=${BOPs[bopCount].contractAddress}`);
-      $(`.payerAddress:eq(${bopCount})`).html(`\n <a href='${window.etherscanURL}${BOPs[bopCount].payer}'>${BOPs[bopCount].payer}</a>`);
-      // $(`.payerAddress:eq(${bopCount})`).text(BOPs[bopCount].payer);
-      if(BOPs[bopCount].recipient !== "0x0000000000000000000000000000000000000000"){
-        // $(`.recipientAddress:eq(${bopCount})`).text("Recipient: \n" + );
-        $(`.recipientAddress:eq(${bopCount})`).html(`Recipient \n <a href='${window.etherscanURL}${BOPs[bopCount].recipient}'>${BOPs[bopCount].recipient}</a>`);
-      }else{
-        $(`.recipientAddress:eq(${bopCount})`).html(`No Recipient! <a href='../layout/interact.html?contractAddress=${BOPs[bopCount].contractAddress}'> Commit ether to become the recipient.</a>`);
-      }
-      $(`.balance:eq(${bopCount})`).text(web3.fromWei(BOPs[bopCount].balance, 'ETHER'));
-      $(`.commitThreshold:eq(${bopCount})`).text(web3.fromWei(BOPs[bopCount].commitThreshold, 'ETHER'));
-      $(`.fundsDeposited:eq(${bopCount})`).text(web3.fromWei(BOPs[bopCount].amountDeposited, 'ETHER'));
-      $(`.fundsBurned:eq(${bopCount})`).text(web3.fromWei(BOPs[bopCount].amountBurned, 'ETHER'));
-      $(`.fundsReleased:eq(${bopCount})`).text(web3.fromWei(BOPs[bopCount].amountReleased, 'ETHER'));
-      $(`.defaultAction:eq(${bopCount})`).text(DEFAULTACTION_MAPPING[Number(BOPs[bopCount].defaultAction)]);
-      $(`.defaultTimeoutLength:eq(${bopCount})`).text(BOPs[bopCount].defaultTimeoutLength/60/60 + " hours");
-      if(BOPs[bopCount].defaultTriggerTime != 0){
-        $(`.defaultTriggerTime:eq(${bopCount})`).text(new Date(BOPs[bopCount].defaultTriggerTime * 1000));
-      }
-      else{
-        $(`.defaultTriggerTime:eq(${bopCount})`).text(0 );
-      }
-      $(`.payerString:eq(${bopCount})`).text(BOPs[bopCount].payerString);
-      $(`.recipientString:eq(${bopCount})`).text(BOPs[bopCount].recipientString);
+function buildBOPRow(){
+  if(BOPs.length !== 1) $("tbody").append($(".mainTableRow").first().clone());
+  // console.log(STATES_MAPPING[BOPs[bopCount].state]);
+  switch(STATES_MAPPING[BOPs[BOPs.length-1].state]){
+    case("Open"):
+      $(`.state:eq(${BOPs.length-1})`).parent().css("background-color", "aquamarine");
+      break;
+    case("Committed"):
+      $(`.state:eq(${BOPs.length-1})`).parent().css("background-color", "cyan");
+      break;
+    case("Expended"):
+      $(`.state:eq(${BOPs.length-1})`).parent().css("background-color", "grey");
+      break;
   }
+  $(`.state:eq(${BOPs.length-1})`).text(STATES_MAPPING[BOPs[BOPs.length-1].state]);
+  $(`.contractAddress:eq(${BOPs.length-1})`).text(BOPs[BOPs.length-1].contractAddress);
+  $(`.contractAddress:eq(${BOPs.length-1})`).attr("href", `../layout/interact.html?contractAddress=${BOPs[BOPs.length-1].contractAddress}`);
+  $(`.payerAddress:eq(${BOPs.length-1})`).html(`\n <a href='${window.etherscanURL}${BOPs[BOPs.length-1].payer}'>${BOPs[BOPs.length-1].payer}</a>`);
+  // $(`.payerAddress:eq(${BOPs.length-1})`).text(BOPs[BOPs.length-1].payer);
+  if(BOPs[BOPs.length-1].recipient !== "0x0000000000000000000000000000000000000000"){
+    // $(`.recipientAddress:eq(${BOPs.length-1})`).text("Recipient: \n" + );
+    $(`.recipientAddress:eq(${BOPs.length-1})`).html(`Recipient \n <a href='${window.etherscanURL}${BOPs[BOPs.length-1].recipient}'>${BOPs[BOPs.length-1].recipient}</a>`);
+  }else{
+    $(`.recipientAddress:eq(${BOPs.length-1})`).html(`No Recipient! <a href='../layout/interact.html?contractAddress=${BOPs[BOPs.length-1].contractAddress}'> Commit ether to become the recipient.</a>`);
+  }
+  $(`.balance:eq(${BOPs.length-1})`).text(web3.fromWei(BOPs[BOPs.length-1].balance, 'ETHER'));
+  $(`.commitThreshold:eq(${BOPs.length-1})`).text(web3.fromWei(BOPs[BOPs.length-1].commitThreshold, 'ETHER'));
+  $(`.fundsDeposited:eq(${BOPs.length-1})`).text(web3.fromWei(BOPs[BOPs.length-1].amountDeposited, 'ETHER'));
+  $(`.fundsBurned:eq(${BOPs.length-1})`).text(web3.fromWei(BOPs[BOPs.length-1].amountBurned, 'ETHER'));
+  $(`.fundsReleased:eq(${BOPs.length-1})`).text(web3.fromWei(BOPs[BOPs.length-1].amountReleased, 'ETHER'));
+  $(`.defaultAction:eq(${BOPs.length-1})`).text(DEFAULTACTION_MAPPING[Number(BOPs[BOPs.length-1].defaultAction)]);
+  $(`.defaultTimeoutLength:eq(${BOPs.length-1})`).text(BOPs[BOPs.length-1].defaultTimeoutLength/60/60 + " hours");
+  if(BOPs[BOPs.length-1].defaultTriggerTime != 0){
+    $(`.defaultTriggerTime:eq(${BOPs.length-1})`).text(new Date(BOPs[BOPs.length-1].defaultTriggerTime * 1000));
+  }
+  else{
+    $(`.defaultTriggerTime:eq(${BOPs.length-1})`).text(0 );
+  }
+  $(`.payerString:eq(${BOPs.length-1})`).text(BOPs[BOPs.length-1].payerString);
+  $(`.recipientString:eq(${BOPs.length-1})`).text(BOPs[BOPs.length-1].recipientString);
 }
 
 window.addEventListener('load', function() {
@@ -96,7 +95,7 @@ window.addEventListener('load', function() {
         //get all newBOP events
         window.BOPs = [];
         window.event = BOPFactory.contractInstance.NewBOP({}, {"fromBlock": 1558897});//NewBOP is an event, not a method; it returns an event object.
-
+        // window.recoverEvent = BOPFactory.contractInstance.FundsRecovered({}, {"fromBlock": 1558897});
 
         currentBOP = {
             "address": "",
@@ -112,13 +111,19 @@ window.addEventListener('load', function() {
             else{
               for(var bopCount = 0; bopCount < result.length; bopCount++){
                 var currentAddress = result[bopCount].args.newBOPAddress;
-                currentBOP.contractInstance = currentBOP.contract.at(currentAddress);
                 (function(currentAddress){
-                currentBOP.contractInstance.getFullState(function(err,res){
-                  onGetFullState(err, res, currentAddress);
-                  if(result.length === BOPs.length){
-                    buildBOPRows();
-                  }
+                    web3.eth.getCode(currentAddress, function(errorGetcode, resultGetcode){
+                      if(errorGetcode){
+                        console.log("Error calling BOP method: " + err.message);
+                      }
+                      else{
+                        if(resultGetcode !== "0x"){
+                          currentBOP.contractInstance = currentBOP.contract.at(currentAddress);
+                          currentBOP.contractInstance.getFullState(function(err,res){
+                            onGetFullState(err, res, currentAddress);
+                          });
+                        }
+                      }
                 });
               })(currentAddress);
               }
@@ -126,3 +131,12 @@ window.addEventListener('load', function() {
         });
     });
 });
+
+function secondsToHms(d) {
+	d = Number(d);
+  var days = Math.floor(d / 86400)
+	var h = Math.floor(d / 3600);
+	var m = Math.floor(d % 3600 / 60);
+	var s = Math.floor(d % 3600 % 60);
+	return ((days > 0 ? days + " d " + h > 0 ? h + " h " + " und " + (m < 10 ? "0" : "") : "") + m +" min" + " " + (s < 10 ? "0" : "") + s + " sec");
+}
