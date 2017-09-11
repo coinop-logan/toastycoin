@@ -2,16 +2,19 @@
 //The recipient is not set when the contract is instantiated.
 
 //The constructor is payable, so the contract can be instantiated with initial funds.
-//Only the payer can fund the Payment after instantiation.
+//In addition, anyone can add more funds to the Payment by calling addFunds.
 
 //All behavior of the contract is directed by the payer, but
 //the payer can never directly recover the payment,
 //unless he calls the recover() function before anyone else commit()s.
 
-//Anyone can become the recipient by contributing the commitThreshold with commit().
-//The recipient will never be changed once it's been set via commit().
+//If the BOP is in the Open state,
+//anyone can become the recipient by contributing the commitThreshold with commit().
+//This changes the state from Open to Committed. The BOP will never return to the Open state.
+//Once set in this way, the recipient will never change.
 
-//The payer can at any time choose to burn or release to the recipient any amount of funds.
+//In the committed state,
+//the payer can at any time choose to burn or release to the recipient any amount of funds.
 
 pragma solidity ^ 0.4.10;
 contract BurnableOpenPaymentFactory {
@@ -47,6 +50,9 @@ contract BurnableOpenPayment {
 	address public payer;
 	address public recipient;
 	address constant burnAddress = 0x0;
+	
+	//Set to true if fundsRecovered is called
+	bool recovered = false;
 
 	//Note that these will track, but not influence the BOP logic.
 	uint public amountDeposited;
@@ -144,7 +150,6 @@ contract BurnableOpenPayment {
 
 	function addFunds()
 	public
-	onlyPayer()
 	payable {
 		require(msg.value > 0);
 
@@ -160,6 +165,7 @@ contract BurnableOpenPayment {
 	public
 	onlyPayer()
 	inState(State.Open) {
+	    recovered = true;
 		FundsRecovered();
 		selfdestruct(payer);
 	}
