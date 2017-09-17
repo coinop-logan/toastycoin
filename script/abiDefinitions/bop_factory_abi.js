@@ -1,4 +1,4 @@
-var BOP_FACTORY_ADDRESS = '0xd7f66E73ebFA13AA2e0947D577F7626752FCd6c5'; //////////////////needs to be changed to const in final version, var for test purposes
+var BOP_FACTORY_ADDRESS = '0x5b8c8de6e864b94a759373f876587f228779c177'; //////////////////needs to be changed to const in final version, var for test purposes
 const BOP_FACTORY_ABI = [{
 		"constant": false,
 		"inputs": [{
@@ -8,8 +8,8 @@ const BOP_FACTORY_ABI = [{
 				"name": "commitThreshold",
 				"type": "uint256"
 			}, {
-				"name": "defaultAction",
-				"type": "uint8"
+				"name": "hasDefaultRelease",
+				"type": "bool"
 			}, {
 				"name": "defaultTimeoutLength",
 				"type": "uint256"
@@ -28,8 +28,40 @@ const BOP_FACTORY_ABI = [{
 		"stateMutability": "payable",
 		"type": "function"
 	}, {
+		"constant": true,
+		"inputs": [{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "contracts",
+		"outputs": [{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}, {
+		"constant": true,
+		"inputs": [],
+		"name": "getContractCount",
+		"outputs": [{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}, {
 		"anonymous": false,
 		"inputs": [{
+				"indexed": true,
+				"name": "contractAddress",
+				"type": "address"
+			}, {
 				"indexed": false,
 				"name": "newBOPAddress",
 				"type": "address"
@@ -43,8 +75,8 @@ const BOP_FACTORY_ABI = [{
 				"type": "uint256"
 			}, {
 				"indexed": false,
-				"name": "defaultAction",
-				"type": "uint8"
+				"name": "hasDefaultRelease",
+				"type": "bool"
 			}, {
 				"indexed": false,
 				"name": "defaultTimeoutLength",

@@ -44,6 +44,14 @@ const BOP_ABI = [{
 		"type": "function"
 	}, {
 		"constant": false,
+		"inputs": [],
+		"name": "callDefaultRelease",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}, {
+		"constant": false,
 		"inputs": [{
 				"name": "amount",
 				"type": "uint256"
@@ -55,12 +63,16 @@ const BOP_ABI = [{
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}, {
-		"constant": false,
+		"constant": true,
 		"inputs": [],
-		"name": "delayDefaultAction",
-		"outputs": [],
+		"name": "hasDefaultRelease",
+		"outputs": [{
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	}, {
 		"constant": true,
@@ -101,7 +113,7 @@ const BOP_ABI = [{
 	}, {
 		"constant": false,
 		"inputs": [],
-		"name": "callDefaultAction",
+		"name": "delayDefaultRelease",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -154,7 +166,7 @@ const BOP_ABI = [{
 				"type": "uint256"
 			}, {
 				"name": "",
-				"type": "uint8"
+				"type": "bool"
 			}, {
 				"name": "",
 				"type": "uint256"
@@ -221,18 +233,6 @@ const BOP_ABI = [{
 	}, {
 		"constant": true,
 		"inputs": [],
-		"name": "defaultAction",
-		"outputs": [{
-				"name": "",
-				"type": "uint8"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	}, {
-		"constant": true,
-		"inputs": [],
 		"name": "amountReleased",
 		"outputs": [{
 				"name": "",
@@ -286,8 +286,8 @@ const BOP_ABI = [{
 				"name": "_commitThreshold",
 				"type": "uint256"
 			}, {
-				"name": "_defaultAction",
-				"type": "uint8"
+				"name": "_hasDefaultRelease",
+				"type": "bool"
 			}, {
 				"name": "_defaultTimeoutLength",
 				"type": "uint256"
@@ -302,6 +302,10 @@ const BOP_ABI = [{
 	}, {
 		"anonymous": false,
 		"inputs": [{
+				"indexed": true,
+				"name": "contractAddress",
+				"type": "address"
+			}, {
 				"indexed": false,
 				"name": "payer",
 				"type": "address"
@@ -311,8 +315,8 @@ const BOP_ABI = [{
 				"type": "uint256"
 			}, {
 				"indexed": false,
-				"name": "defaultAction",
-				"type": "uint8"
+				"name": "hasDefaultRelease",
+				"type": "bool"
 			}, {
 				"indexed": false,
 				"name": "defaultTimeoutLength",
@@ -403,12 +407,12 @@ const BOP_ABI = [{
 	}, {
 		"anonymous": false,
 		"inputs": [],
-		"name": "DefaultActionDelayed",
+		"name": "DefaultReleaseDelayed",
 		"type": "event"
 	}, {
 		"anonymous": false,
 		"inputs": [],
-		"name": "DefaultActionCalled",
+		"name": "DefaultReleaseCalled",
 		"type": "event"
 	}
 ];
