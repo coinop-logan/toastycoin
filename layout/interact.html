@@ -5,9 +5,14 @@
     <title>Tokentoast - Create BOP</title>
     <script type="text/javascript" src="../script/lib/web3.js"></script>
     <script type="text/javascript" src="../script/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../script/lib/constants.js"></script>
     <script type="text/javascript" src='../script/abiDefinitions/bop_abi.js'></script>
     <script type="text/javascript" src='../script/abiDefinitions/bop_factory_abi.js'></script>
     <script type="text/javascript" src="../script/interact.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../style/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/interact.css">
   </head>
   <body>
     <h1 align="center">Toastycoin</h1>
@@ -40,8 +45,10 @@
                         <form id='payerFundsInputGroup' hidden='true'>
                             <input type='text' name='amount' size=7><br>
     						            <input type='button' value='Add Funds' onClick='addFundsFromForm()'>
-                            <input type='button' value='Release' onClick='releaseFromForm()'>
-                            <input type='button' value='Burn' onClick='burnFromForm()'>
+                        </form>
+                        <form id='payerBurnReleaseInputGroup' hidden='true'>
+                          <input type='button' value='Release' onClick='releaseFromForm()'>
+                          <input type='button' value='Burn' onClick='burnFromForm()'>
                         </form>
                     </td>
                     <td>
@@ -76,18 +83,18 @@
                         <font color="#cf7700">
                         <span id='BOPDefaultActionOutput'>loading...</span>
                         </font>
-                    <div id='defaultActionInputGroup' hidden='true'>
-                      <input type='button' value='callDefaultAction' onClick='callDefaultAction()'>
-                    </div>
+                        <div id='defaultActionInputGroup' hidden='true'>
+                          <input type='button' value='callDefaultAction' onClick='callDefaultAction()'>
+                        </div>
                     </td>
                     <td align='center'>
                       <span id='BOPDefaultActionTriggerTime'></span>
                     </td>
-                    <td align='center'>
+                    <td id='BOPDefaultTimeoutLengthGroup' align='center'>
                       Default Timeout Length: <br>
                         <span id="BOPDefaultTimeoutLength"></span>
                         <form id="delayDefaultActionForm" hidden='true'>
-                          <input type='button' value='delayDefaultAction' onClick='delayDefaultAction()'>
+                          <input type='button' value='delayDefaultAction' onClick='delayDefaultRelease()'>
                         </form>
                     </td>
                 </tr>
@@ -127,5 +134,11 @@
         </tr>
     </table>
     <br>
+    <div class="container">
+      <ul class="list-group">
+      </ul>
+    </div>
+    </div>
+  </body>
   </body>
 </html>

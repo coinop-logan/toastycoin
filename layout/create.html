@@ -18,9 +18,8 @@
     Payer: <input id = 'payerInput' name='payerInput' type='text' placeholder='Double-click to fetch from Metamask/web3' size='40' ondblclick="populatePayerInputFromMetamask()"><br>
     Payment Amount: <input id = 'paymentAmountInput' name='paymentAmountInput' type='text' size='7'>ETH<br>
     Commit Threshold: <input id = 'commitThresholdInput' name='commitThresholdInput' type='text' size='7'>ETH<br>
-    Default Action: <label><input type='radio' name='defaultActionInput' class='defaultActionInput' value='None' checked onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = true;">None</label>
-                    <label><input type='radio' name='defaultActionInput' class='defaultActionInput' value='Release'onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = false;">Release</label>
-                    <label><input type='radio' name='defaultActionInput' class='defaultActionInput' value='Burn'onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = false;">Burn</label>
+    Default Action: <label><input type='radio' name='hasDefaultActionInput' class='hasDefaultActionInput' value='false' checked onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = true;">None</label>
+                    <label><input type='radio' name='hasDefaultActionInput' class='hasDefaultActionInput' value='true' onclick="document.getElementById('defaultTimeoutLengthInHoursInput').disabled = false;">Release</label>
     <br>
     Default Timeout Length: <input type='text' id='defaultTimeoutLengthInHoursInput' name='defaultTimeoutLengthInHoursInput' disabled=true> hours<br>
     Initial PayerString:<br><textarea id='payerStringInput' name='payerStringInput' cols='80' rows='15'></textarea><br>
