@@ -4,12 +4,12 @@ function handleNewBOPResult(err, res) {
         $("outputDiv").html("BOP Creation transaction submitted. Address (upon transaction confirmation): " + res);
     }
 }
-function callNewBOP(valueInEth, payer, commitThresholdInEth, defaultAction, defaultTimeoutLengthInHours, payerString) {
+function callNewBOP(valueInEth, payer, commitThresholdInEth, hasDefaultAction, defaultTimeoutLengthInHours, payerString) {
     var valueInWei = web3.toWei(valueInEth, 'ether');
     var commitThresholdInWei = web3.toWei(commitThresholdInEth, 'ether');
     var defaultTimeoutLengthInSeconds = defaultTimeoutLengthInHours*60*60;
 
-    BOPFactory.contractInstance.newBurnableOpenPayment(payer, commitThresholdInWei, defaultAction, defaultTimeoutLengthInSeconds, payerString, {'from':web3.eth.accounts[0],'value': valueInWei}, handleNewBOPResult);
+    BOPFactory.contractInstance.newBurnableOpenPayment(payer, commitThresholdInWei, hasDefaultAction, defaultTimeoutLengthInSeconds, payerString, {'from':web3.eth.accounts[0],'value': valueInWei}, handleNewBOPResult);
 }
 
 function useBOPFormInput() {
@@ -33,12 +33,9 @@ function useBOPFormInput() {
     }
     commitThresholdInEth = Number(commitThresholdInEth);
 
-    var defaultAction = $('input[name=defaultActionInput]:checked', '#NewBOPForm').val();
-    if (defaultAction == 'None') defaultAction = 0;
-    else if (defaultAction == 'Release') defaultAction = 1;
-    else if (defaultAction == 'Burn') defaultAction = 2;
+    var hasDefaultAction = ($('input[name=hasDefaultActionInput]:checked', '#NewBOPForm').val() === "true");
 
-    if (defaultAction != 0) {
+    if (hasDefaultAction) {
         var defaultTimeoutLengthInHours = $("#NewBOPForm #defaultTimeoutLengthInHoursInput").val();
         if (defaultTimeoutLengthInHours == '') {
             alert("Must specify a default timeout length! (Or set default action to \"None\")");
@@ -54,8 +51,7 @@ function useBOPFormInput() {
             return;
         }
     }
-    console.log(defaultAction);
-    callNewBOP(valueInEth, payer, commitThresholdInEth, defaultAction, defaultTimeoutLengthInHours, payerString);
+    callNewBOP(valueInEth, payer, commitThresholdInEth, hasDefaultAction, defaultTimeoutLengthInHours, payerString);
 }
 
 function populatePayerInputFromMetamask() {
@@ -77,7 +73,7 @@ window.addEventListener('load', function() {
         }
         else if (netID == 3) {
             console.log("You are on the Ropsten net!");
-            BOP_FACTORY_ADDRESS = '0xf26083e4BeFc752DF93fa0402D5804649f0046C0';
+            // BOP_FACTORY_ADDRESS = '0x5b8c8de6e864b94a759373f876587f228779c177'//'0xf26083e4BeFc752DF93fa0402D5804649f0046C0';
         }
         else{
           alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network.");

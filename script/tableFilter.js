@@ -5,10 +5,10 @@ setTimeout(function(){
   addressFilter = document.querySelector("input[name='addressFilter']");
   addressFilter.addEventListener("input", filterTableOnAddresses);
   stateSelection.addEventListener("change", filterStates);
-  
+
   //Set a constant that contains the initial elments and ordering used for resetting
   const tableBodyChildrenInitial = Array.from(tableBody.children);
-  
+
   resetFilterButton = document.querySelector("#resetFilterButton");
   //Reset all of the filtering and sorting
   resetFilterButton.addEventListener("click", function(){
@@ -19,7 +19,7 @@ setTimeout(function(){
     filterTableOnAddresses();
     removeAllSortIcons();
   });
-}, 3000);
+}, 1000);
 //Initialize needed document elements
 
 
